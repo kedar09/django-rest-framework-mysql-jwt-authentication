@@ -6,6 +6,7 @@ class User(AbstractUser):
     name = models.CharField(max_length=255)
     email = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
+    is_staff = models.BooleanField(default=False)
     username = None
     
     USERNAME_FIELD = 'email'

@@ -5,17 +5,21 @@ from rest_framework import status
 from .models import User
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register_user(request):
     if request.method == 'POST':
         try:
-            # user_payload = dict()
-            # user_payload.name = request.data['name']
-            # user_payload.email = request.data['email']
-            # user_payload.password = request.data['password']
-            register_user_serializer = UserSerializer(data=request.data)
+            payload = {
+                "name": request.data['name'],
+                "email": request.data['email'],
+                "password": request.data['password'],
+                "is_staff": request.data['is_staff']
+            }
+            print(payload)
+            register_user_serializer = UserSerializer(data=payload)
             if register_user_serializer.is_valid():
                 register_user_serializer.save()
                 return Response(register_user_serializer.data, status=status.HTTP_201_CREATED)
@@ -44,7 +48,7 @@ def login_user(request):
         
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def get_user(request):
     if request.method == 'POST':
         try:
