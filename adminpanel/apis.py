@@ -12,14 +12,11 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 def register_user(request):
     if request.method == 'POST':
         try:
-            # user_payload = dict()
-            # user_payload.name = request.data['name']
-            # user_payload.email = request.data['email']
-            # user_payload.password = request.data['password']
             register_user_serializer = UserSerializer(data=request.data)
             if register_user_serializer.is_valid():
-                register_user_serializer.save()
-                return Response(register_user_serializer.data, status=status.HTTP_201_CREATED)
+                user=register_user_serializer.save()
+                token=get_tokens_for_user(user=user)
+                return Response({'token': token, 'user': UserSerializer(user).data}, status=status.HTTP_201_CREATED)
             return Response(register_user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except KeyError as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
