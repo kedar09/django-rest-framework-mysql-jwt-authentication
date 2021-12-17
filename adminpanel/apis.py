@@ -54,8 +54,6 @@ def get_user(request):
             return Response({'user': UserSerializer(user, many=True).data}, status=status.HTTP_200_OK)
         except KeyError as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
-        # return Response(status=status.HTTP_200_OK)
 
 
 def get_tokens_for_user(user):
